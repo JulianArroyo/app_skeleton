@@ -1,0 +1,33 @@
+version: '3.8'
+# https://docs.docker.com/compose/compose-file/compose-versioning/
+
+services:
+  app-skeleton-be:
+    container_name: app-skeleton-be
+    build:
+#      context: ./docker/php8.2-apache
+      context: ./docker/php7.4-apache
+      args:
+        UID: $U_ID
+    ports:
+      - "80:80"
+    ###> XDEBUG 3 ###
+    # Use your client IP here
+    # Linux: run "ip a | grep docker0"
+    # Windows (with WSL2) and Mac: host.docker.internal
+    environment:
+      XDEBUG_CLIENT_HOST: 172.17.0.1
+      XDEBUG_CLIENT_PORT: 9003
+      PHP_IDE_CONFIG: app-skeleton
+    volumes:
+      - ./:/var/www/app-skeleton
+#      - ../other_project/:/var/www/other_project
+#      - ../another_project/:/var/www/another_project
+#    depends_on:
+#      - global-mysql8.0
+    networks:
+      - global-mysql-network
+
+networks:
+  global-mysql-network:
+    external: true
